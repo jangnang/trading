@@ -117,6 +117,20 @@
                     <el-menu-item index="Ensure">查询保证金策略</el-menu-item>
                   </el-menu-item-group>
                 </el-sub-menu>
+                <el-sub-menu index="11">
+                  <template #title>
+                    <el-icon><location /></el-icon>
+                    <span> OTC管理</span>
+                  </template>
+                  <el-menu-item-group>
+                    <el-menu-item index="Advertising">后台广告</el-menu-item>
+                    <el-menu-item index="Complaint">后台申述</el-menu-item>
+                    <el-menu-item index="Order">订单管理</el-menu-item>
+                    <el-menu-item index="Currency">币种管理</el-menu-item>
+                    <el-menu-item index="Surrender">退保管理</el-menu-item>
+                    <el-menu-item index="Certification">认证商家</el-menu-item>
+                  </el-menu-item-group>
+                </el-sub-menu>
               </el-menu>
             </el-col>
           </el-row></el-aside

@@ -153,4 +153,34 @@ export default [
     name: 'Ensure',
     component: () => import('@/views/Ensure/Ensure.vue'),
   },
+  {
+    path: 'Advertising',
+    name: 'Advertising',
+    component: () => import('@/views/OTC/Advertising.vue'),
+  },
+  {
+    path: 'Certification',
+    name: 'Certification',
+    component: () => import('@/views/OTC/Certification.vue'),
+  },
+  {
+    path: 'Complaint',
+    name: 'Complaint',
+    component: () => import('@/views/OTC/Complaint.vue'),
+  },
+  {
+    path: 'Currency',
+    name: 'Currency',
+    component: () => import('@/views/OTC/Currency.vue'),
+  },
+  {
+    path: 'Order',
+    name: 'Order',
+    component: () => import('@/views/OTC/Order.vue'),
+  },
+  {
+    path: 'Surrender',
+    name: 'Surrender',
+    component: () => import('@/views/OTC/Surrender.vue'),
+  },
 ];
