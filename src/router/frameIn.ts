@@ -74,8 +74,8 @@ export default [
     component: () => import('@/views/Financial/Trading.vue'),
   },
   {
-    path: 'Order',
-    name: 'Order',
+    path: 'Orderss',
+    name: 'Orderss',
     component: () => import('@/views/Coin/Order.vue'),
   },
   {
@@ -154,8 +154,8 @@ export default [
     component: () => import('@/views/Ensure/Ensure.vue'),
   },
   {
-    path: 'Advertising',
-    name: 'Advertising',
+    path: 'Advertisings',
+    name: 'Advertisings',
     component: () => import('@/views/OTC/Advertising.vue'),
   },
   {
@@ -174,8 +174,8 @@ export default [
     component: () => import('@/views/OTC/Currency.vue'),
   },
   {
-    path: 'Order',
-    name: 'Order',
+    path: 'Orders',
+    name: 'Orders',
     component: () => import('@/views/OTC/Order.vue'),
   },
   {
