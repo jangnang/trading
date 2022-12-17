@@ -5,8 +5,12 @@
       <el-container>
         <el-aside width="wid">
           <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
-            <el-radio-button :label="false">展开</el-radio-button>
-            <el-radio-button :label="true">隐藏</el-radio-button>
+            <el-radio-button :label="true" :style="{ display: ce, left: 120 + 'px' }" @click="fn1"
+              ><el-icon size="25px"><Fold /></el-icon
+            ></el-radio-button>
+            <el-radio-button :label="false" :style="{ display: cl }" @click="fn"
+              ><el-icon size="25px"><Expand /></el-icon
+            ></el-radio-button>
           </el-radio-group>
           <el-menu
             default-active="2"
@@ -155,15 +159,25 @@ export default defineComponent({
     return {
       isCollapse: true,
       wid: '200px',
+      ce: 'none',
+      cl: 'block',
     };
   },
   methods: {
     attribute(index: any) {
       this.$router.push(index);
+      console.log(index);
     },
-    // f2(index: any) {
-    //   console.log(index);
-    // },
+    fn() {
+      console.log(111);
+      this.cl = 'none';
+      this.ce = 'block';
+    },
+    fn1() {
+      console.log(111);
+      this.cl = 'block';
+      this.ce = 'none';
+    },
   },
 });
 </script>
@@ -195,9 +209,14 @@ export default defineComponent({
 ::v-deep .el-menu-item-group__title {
   background-color: rgb(184, 162, 132);
 }
+::v-deep .el-radio-button__inner {
+  background: linear-gradient(to right, rgb(189, 195, 199), rgb(44, 62, 80));
+  border-radius: 20%;
+}
 .el-radio-group {
+  width: 20px;
   position: absolute;
-  top: 26px;
-  left: 2px;
+  top: 9px;
+  left: 71px;
 }
 </style>

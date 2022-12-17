@@ -13,5 +13,6 @@ module.exports = {
     'vue/multi-word-component-names': 0,
     'no-restricted-syntax': 0,
     'no-param-reassign': 0,
+    'no-undef': 0,
   },
 };
