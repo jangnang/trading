@@ -129,9 +129,9 @@ export default [
     component: () => import('@/views/System/System.vue'),
   },
   {
-    path: 'Management',
-    name: 'Management',
-    component: () => import('@/views/System/Management.vue'),
+    path: 'Classify',
+    name: 'Classify',
+    component: () => import('@/views/System/Classify.vue'),
   },
   {
     path: 'Permissions',
