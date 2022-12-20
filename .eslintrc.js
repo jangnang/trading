@@ -16,5 +16,7 @@ module.exports = {
     'no-undef': 0,
     'import/prefer-default-export': 0,
     'no-shadow': 0,
+    'no-prototype-builtins': 0,
+    'no-bitwise': 0,
   },
 };

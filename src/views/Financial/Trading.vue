@@ -31,26 +31,30 @@
   <el-table :data="tableData" style="width: 100%" border>
     <el-table-column prop="members" label="会员ID" style="width: 20%" />
     <el-table-column prop="trading" label="交易类型" style="width: 20%" />
-    <el-table-column prop="amount" label="交易金额" style="width: 20%" />
+    <el-table-column prop="'amount'" label="交易金额" style="width: 20%" />
     <el-table-column prop="service" label="交易手续费" style="width: 20%" />
     <el-table-column prop="createdAt" label="交易时间" />
   </el-table>
-  <el-pagination
-    background
-    layout="prev, pager, next"
-    :total="total1"
-    :page-size="limit"
-    v-model:current-page="page"
-    @current-change="onPageChange"
-  />
+  <div class="tang">
+    <el-pagination
+      background
+      layout="prev, pager, next"
+      :total="total1"
+      :page-size="limit"
+      v-model:current-page="page"
+      @current-change="onPageChange"
+    />跳至<el-input v-model="input5" class="jump" @change="fn" />页
+  </div>
 </template>
 <script setup lang="ts">
 import { RefreshRight } from '@element-plus/icons-vue';
+import { ElMessage } from 'element-plus';
 import { onMounted, ref, watch } from 'vue';
 import dayjs from 'dayjs';
 import { TradingList } from '@/api/Financial/Trading';
 
 const input = ref('');
+const input5 = ref();
 const input1 = ref('');
 const input2 = ref('');
 const input3 = ref('');
@@ -86,18 +90,29 @@ const tableData = ref([
     amount: '',
     service: '',
     createdAt: '',
+    currency: '',
   },
 ]);
-const fullscreenLoading = ref(false);
+const timi = dayjs(value1.value[0]).format('YYYY-MM-DD HH:mm:ss');
+const timis = dayjs(value1.value[1]).format('YYYY-MM-DD HH:mm:ss');
 
+const fullscreenLoading = ref(false);
+watch(input2, (count, prevCount) => {
+  console.log(input2.value);
+});
 const getData = async () => {
-  const timi = dayjs(value1.value[0]).format('YYYY-MM-DD HH:mm:ss');
-  const timis = dayjs(value1.value[1]).format('YYYY-MM-DD HH:mm:ss');
+  console.log(timi, timis);
   const res = await TradingList({
     $limit: limit.value,
     $page: page.value,
     keyword: input.value,
     trading: value.value,
+    amount: input1.value,
+    amount1: input2.value,
+    service: input3.value,
+    service1: input4.value,
+    createdAt: timi,
+    createdAt1: timis,
   });
   const { status, data } = res;
 
@@ -110,8 +125,14 @@ const getData = async () => {
     }
   }
 };
+
 const onSearch = () => {
   page.value = 1;
+  fullscreenLoading.value = true;
+  setTimeout(() => {
+    getData();
+    fullscreenLoading.value = false;
+  }, 1000);
   getData();
 };
 const openFullScreen1 = () => {
@@ -121,15 +142,26 @@ const openFullScreen1 = () => {
     fullscreenLoading.value = false;
   }, 1000);
 };
-watch(value1, (count, prevCount) => {
-  const s = dayjs(value1.value[1]).format('YYYY-MM-DD HH:mm:ss');
-  console.log('count', s);
+input5.value = page.value;
+watch(page, (count, prevCount) => {
+  input5.value = page.value;
+  console.log(input5.value);
 });
+
 const onPageChange = (page) => {
   page = page.value;
   getData();
 };
-
+const fn = () => {
+  const sn = Math.ceil(total1.value / limit.value);
+  if (input5.value > sn || input5.value < 1) {
+    input5.value = page.value;
+    ElMessage.error('请求页码错误');
+  }
+  page.value = Number(input5.value);
+  openFullScreen1();
+  getData();
+};
 onMounted(async () => {
   await getData();
 });
@@ -158,9 +190,15 @@ onMounted(async () => {
   margin-top: 10px;
 }
 .el-pagination {
-  position: relative;
-  bottom: -3px;
-  left: 965px;
-  width: 400px;
+  // position: relative;
+  // bottom: -3px;
+  // left: 965px;
+}
+.tang {
+  float: right;
+  display: flex;
+}
+.jump {
+  width: 50px;
 }
 </style>
