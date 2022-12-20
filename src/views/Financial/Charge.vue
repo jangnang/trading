@@ -12,7 +12,6 @@
   </div>
   <br />
   <hr />
-
   交易类型：<el-select v-model="value" placeholder="Select">
     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
   </el-select>
@@ -24,10 +23,11 @@
   <el-button type="primary" @click="onSearch">搜索</el-button>
   <el-button type="success" @click="ExportXlsx">导出</el-button>
   <el-table :data="tableData" style="width: 100%" border>
-    <el-table-column prop="members" label="会员ID" style="width: 25%" />
-    <el-table-column prop="trading" label="交易类型" style="width: 25%" />
-    <el-table-column prop="createdAt" label="交易时间" />
-    <el-table-column prop="service" label="交易手续费" style="width: 25%" />
+    <el-table-column prop="members" label="会员ID" style="width: 20%" />
+    <el-table-column prop="trading" label="交易类型" style="width: 20%" />
+    <el-table-column prop="currency" label="手续费类型" style="width: 20%" />
+    <el-table-column prop="time" label="交易时间" />
+    <el-table-column prop="service" label="交易手续费" style="width: 20%" />
   </el-table>
   <div class="tang">
     <el-pagination
@@ -41,16 +41,19 @@
   </div>
 </template>
 <script setup lang="ts">
-import { BTable } from 'bootstrap-vue';
-import * as XLSX from 'xlsx'; // Vue3 版本
 import { RefreshRight } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import { onMounted, ref, watch } from 'vue';
 import dayjs from 'dayjs';
-import { TradingList } from '@/api/Financial/Trading';
 import { exportExcel } from '@/api/export';
+import { TradingList } from '@/api/Financial/Trading';
 
+const input = ref('');
 const input5 = ref();
+const input1 = ref('');
+const input2 = ref('');
+const input3 = ref('');
+const input4 = ref('');
 const value = ref('');
 const value1 = ref('');
 const limit = ref(5);
@@ -81,19 +84,26 @@ const tableData = ref([
     trading: '',
     amount: '',
     service: '',
-    createdAt: '',
-    updatedAt: '',
+    time: '',
+    currency: '',
   },
 ]);
-const fullscreenLoading = ref(false);
 
+const fullscreenLoading = ref(false);
+watch(input2, (count, prevCount) => {
+  console.log(input2.value);
+});
 const getData = async () => {
-  const timi = dayjs(value1.value[0]).format('YYYY-MM-DD HH:mm:ss');
-  const timis = dayjs(value1.value[1]).format('YYYY-MM-DD HH:mm:ss');
   const res = await TradingList({
     $limit: limit.value,
     $page: page.value,
+    keyword: input.value,
     trading: value.value,
+    amount: input1.value,
+    amount1: input2.value,
+    service: input3.value,
+    service1: input4.value,
+    createdAt: value1.value,
   });
   const { status, data } = res;
 
@@ -101,21 +111,25 @@ const getData = async () => {
     tableData.value = data.data;
     total1.value = data.total;
     for (const index of tableData.value) {
-      const s = dayjs(index.createdAt).format('YYYY-MM-DD HH:mm:ss');
-      const c = dayjs(index.updatedAt).format('YYYY-MM-DD HH:mm:ss');
-      index.createdAt = s;
-      index.updatedAt = c;
+      const s = dayjs(index.time).format('YYYY-MM-DD HH:mm:ss');
+      index.amount += index.currency;
+      index.time = s;
     }
   }
-};
-const ExportXlsx = () => {
-  const titleArr = ['id', '会员ID', '交易类型', '交易金额', '交易手续费']; // 表头中文名
-  exportExcel(tableData.value, 'test', titleArr, 'sheetName');
 };
 
 const onSearch = () => {
   page.value = 1;
+  fullscreenLoading.value = true;
+  setTimeout(() => {
+    getData();
+    fullscreenLoading.value = false;
+  }, 1000);
   getData();
+};
+const ExportXlsx = () => {
+  const titleArr = ['id', '会员ID', '交易类型', '交易金额', '交易手续费']; // 表头中文名
+  exportExcel(tableData.value, 'test', titleArr, 'sheetName');
 };
 const openFullScreen1 = () => {
   fullscreenLoading.value = true;
@@ -129,7 +143,8 @@ watch(page, (count, prevCount) => {
   input5.value = page.value;
   console.log(input5.value);
 });
-const onPageChange = (page: { value: any; }) => {
+
+const onPageChange = (page) => {
   page = page.value;
   getData();
 };

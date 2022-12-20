@@ -27,13 +27,13 @@
     </div>
   </div>
   <el-button type="primary" @click="onSearch">搜索</el-button>
-  <el-button type="success">导出</el-button>
+  <el-button type="success" @click="ExportXlsx">导出</el-button>
   <el-table :data="tableData" style="width: 100%" border>
     <el-table-column prop="members" label="会员ID" style="width: 20%" />
     <el-table-column prop="trading" label="交易类型" style="width: 20%" />
-    <el-table-column prop="'amount'" label="交易金额" style="width: 20%" />
+    <el-table-column prop="amount" label="交易金额" style="width: 20%" />
     <el-table-column prop="service" label="交易手续费" style="width: 20%" />
-    <el-table-column prop="createdAt" label="交易时间" />
+    <el-table-column prop="time" label="交易时间" />
   </el-table>
   <div class="tang">
     <el-pagination
@@ -51,6 +51,7 @@ import { RefreshRight } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import { onMounted, ref, watch } from 'vue';
 import dayjs from 'dayjs';
+import { exportExcel } from '@/api/export';
 import { TradingList } from '@/api/Financial/Trading';
 
 const input = ref('');
@@ -89,19 +90,16 @@ const tableData = ref([
     trading: '',
     amount: '',
     service: '',
-    createdAt: '',
+    time: '',
     currency: '',
   },
 ]);
-const timi = dayjs(value1.value[0]).format('YYYY-MM-DD HH:mm:ss');
-const timis = dayjs(value1.value[1]).format('YYYY-MM-DD HH:mm:ss');
 
 const fullscreenLoading = ref(false);
 watch(input2, (count, prevCount) => {
   console.log(input2.value);
 });
 const getData = async () => {
-  console.log(timi, timis);
   const res = await TradingList({
     $limit: limit.value,
     $page: page.value,
@@ -111,8 +109,7 @@ const getData = async () => {
     amount1: input2.value,
     service: input3.value,
     service1: input4.value,
-    createdAt: timi,
-    createdAt1: timis,
+    createdAt: value1.value,
   });
   const { status, data } = res;
 
@@ -120,8 +117,9 @@ const getData = async () => {
     tableData.value = data.data;
     total1.value = data.total;
     for (const index of tableData.value) {
-      const s = dayjs(index.createdAt).format('YYYY-MM-DD HH:mm:ss');
-      index.createdAt = s;
+      const s = dayjs(index.time).format('YYYY-MM-DD HH:mm:ss');
+      index.amount += index.currency;
+      index.time = s;
     }
   }
 };
@@ -134,6 +132,11 @@ const onSearch = () => {
     fullscreenLoading.value = false;
   }, 1000);
   getData();
+};
+const ExportXlsx = () => {
+  const titleArr = ['id', '会员ID', '交易类型', '交易金额', '', '交易手续费', '交易时间', '', ''];
+
+  exportExcel(tableData.value, 'test', titleArr, 'sheetName');
 };
 const openFullScreen1 = () => {
   fullscreenLoading.value = true;
