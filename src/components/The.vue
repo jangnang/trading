@@ -95,7 +95,7 @@
         <el-menu-item index="User">用户管理</el-menu-item>
         <el-menu-item index="Repartment">部门管理</el-menu-item>
         <el-menu-item index="System">系统日志</el-menu-item>
-        <el-menu-item index="Management">币种管理</el-menu-item>
+        <el-menu-item index="Classify">币种管理</el-menu-item>
         <el-menu-item index="Permissions">权限管理</el-menu-item>
         <el-menu-item index="Maintenance">系统信息维护</el-menu-item>
         <el-menu-item index="Version">版本管理</el-menu-item>
