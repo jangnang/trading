@@ -23,14 +23,13 @@
     placeholder="请输入创建人搜索"
     size:50px
   />
+  币种：<el-select v-model="value1" placeholder="Select" style="width: 150px; margin: 0px 5px">
+    <el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value" />
+  </el-select>
   交易类型：<el-select v-model="value" placeholder="Select" style="width: 150px; margin: 0px 5px">
     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
   </el-select>
-  <div class="demo-date-picker">
-    <div class="block">
-      <el-date-picker v-model="value1" type="daterange" start-placeholder="选择时间区间" />
-    </div>
-  </div>
+
   <el-button type="primary" @click="onSearch">搜索</el-button>
 
   <el-table
@@ -40,21 +39,21 @@
     @selection-change="handleSelectionChange"
   >
     <el-table-column type="selection" width="55" />
-    <el-table-column property="name" label="订单编号" width="100" />
+    <el-table-column property="order" label="订单编号" width="100" />
     <el-table-column label="交易时间" sortable width="120">
-      <template #default="scope">{{ scope.row.date }}</template>
+      <template #default="scope">{{ scope.row.ttime }}</template>
     </el-table-column>
-    <el-table-column property="name" label="交易人" width="100" />
-    <el-table-column property="name" label="创建人" width="100" />
-    <el-table-column property="name" label="币种" width="100" />
-    <el-table-column property="name" label="类型" width="100" />
-    <el-table-column property="name" label="订单数量" width="100" />
-    <el-table-column property="name" label="订单金额" width="100" />
-    <el-table-column property="name" label="手续费" width="100" />
-    <el-table-column property="name" label="支付方式" width="100" />
-    <el-table-column property="name" label="订单状态" width="100" />
+    <el-table-column property="dealer" label="交易人" width="100" />
+    <el-table-column property="founder" label="创建人" width="100" />
+    <el-table-column property="currency" label="币种" width="100" />
+    <el-table-column property="type" label="类型" width="100" />
+    <el-table-column property="quantity" label="订单数量" width="100" />
+    <el-table-column property="amount" label="订单金额" width="100" />
+    <el-table-column property="commission" label="手续费" width="100" />
+    <el-table-column property="payment" label="支付方式" width="100" />
+    <el-table-column property="status" label="订单状态" width="100" />
     <el-table-column property="address" label="操作" show-overflow-tooltip>
-      <el-button size="small">查看</el-button>
+      <el-button size="small" @click="view(tableData.values)">查看</el-button>
     </el-table-column>
   </el-table>
   <div class="tang">
@@ -73,17 +72,24 @@ import { RefreshRight } from '@element-plus/icons-vue';
 import { ElMessage, ElTable } from 'element-plus';
 import { onMounted, ref, watch } from 'vue';
 import dayjs from 'dayjs';
-import { TradingList } from '@/api/Financial/Trading';
+import { TradingList } from '@/api/Financial/Fiat';
 
 interface User {
-  date: string;
-  name: string;
-  address: string;
+  order: string;
+  ttime: string;
+  dealer: string;
+  founder: string;
+  currency: string;
+  type: string;
+  quantity: number;
+  amount: number;
+  commission: number;
+  payment: string;
+  status: string;
 }
 
 const multipleTableRef = ref<InstanceType<typeof ElTable>>();
 const multipleSelection = ref<User[]>([]);
-const input = ref('');
 const input21 = ref('');
 const input22 = ref('');
 const input5 = ref();
@@ -110,39 +116,69 @@ const options = [
     label: '币币交易',
   },
 ];
+const options1 = [
+  {
+    value: 'USDT',
+    label: 'USDT',
+  },
+  {
+    value: 'BTC',
+    label: 'BTC',
+  },
+  {
+    value: 'BNB',
+    label: 'BNB',
+  },
+  {
+    value: 'ETH',
+    label: 'ETH',
+  },
+];
 const handleSelectionChange = (val: User[]) => {
   multipleSelection.value = val;
 };
-const tableData: User[] = [
+const tableData = ref([
   {
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
+    id: '',
+    order: '',
+    ttime: '',
+    dealer: '',
+    founder: '',
+    currency: '',
+    type: '',
+    quantity: '',
+    amount: '',
+    commission: '',
+    payment: '',
+    status: '',
   },
-];
+]);
 
 const fullscreenLoading = ref(false);
 const getData = async () => {
   const res = await TradingList({
     $limit: limit.value,
     $page: page.value,
-    keyword: input.value,
+    keyword: input21.value,
     trading: value.value,
-    createdAt: value1.value,
+    founder: input22.value,
+    currency: value1.value,
   });
   const { status, data } = res;
+  console.log(data);
 
   if (status === 200) {
     tableData.value = data.data;
     total1.value = data.total;
     for (const index of tableData.value) {
-      const s = dayjs(index.time).format('YYYY-MM-DD HH:mm:ss');
-      index.amount += index.currency;
-      index.time = s;
+      const s = dayjs(index.ttime).format('YYYY-MM-DD HH:mm:ss');
+      index.ttime = s;
     }
   }
 };
-
+const view = (index) => {
+  console.log(index);
+};
 const onSearch = () => {
   page.value = 1;
   fullscreenLoading.value = true;
