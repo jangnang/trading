@@ -14,13 +14,10 @@ module.exports = {
     'no-restricted-syntax': 0,
     'no-param-reassign': 0,
     'no-undef': 0,
-<<<<<<< HEAD
     'linebreak-style': 'off',
-=======
     'import/prefer-default-export': 0,
     'no-shadow': 0,
     'no-prototype-builtins': 0,
     'no-bitwise': 0,
->>>>>>> Financial-Management
   },
 };

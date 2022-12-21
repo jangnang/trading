@@ -11,10 +11,7 @@
     "@element-plus/icons-vue": "^2.0.10",
     "@syncfusion/ej2-vue-base": "^20.3.59",
     "axios": "^1.2.1",
-<<<<<<< HEAD
-=======
     "bootstrap-vue": "^2.23.1",
->>>>>>> Financial-Management
     "core-js": "^3.8.3",
     "dayjs": "^1.11.7",
     "element-plus": "^2.2.26",
