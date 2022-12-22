@@ -13,20 +13,28 @@
   <br />
   <hr />
   <el-input
-    style="width: 150px; margin: 0px 5px"
+    style="width: 150.0032px; margin: 0px 4.9984px"
     v-model="input21"
     placeholder="请输入交易人搜索"
   />
   <el-input
-    style="width: 150px; margin: 0px 5px"
+    style="width: 150.0032px; margin: 0px 4.9984px"
     v-model="input22"
     placeholder="请输入创建人搜索"
-    size:50px
+    size:50.0032px
   />
-  币种：<el-select v-model="value1" placeholder="Select" style="width: 150px; margin: 0px 5px">
+  币种：<el-select
+    v-model="value1"
+    placeholder="Select"
+    style="width: 150.0032px; margin: 0px 4.9984px"
+  >
     <el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value" />
   </el-select>
-  交易类型：<el-select v-model="value" placeholder="Select" style="width: 150px; margin: 0px 5px">
+  交易类型：<el-select
+    v-model="value"
+    placeholder="Select"
+    style="width: 150.0032px; margin: 0px 4.9984px"
+  >
     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
   </el-select>
 
@@ -37,23 +45,26 @@
     :data="tableData"
     style="width: 100%"
     @selection-change="handleSelectionChange"
+    border
   >
     <el-table-column type="selection" width="55" />
-    <el-table-column property="order" label="订单编号" width="100" />
-    <el-table-column label="交易时间" sortable width="120">
+    <el-table-column property="order" label="订单编号" align="center" width="100" />
+    <el-table-column label="交易时间" align="center" sortable width="120">
       <template #default="scope">{{ scope.row.ttime }}</template>
     </el-table-column>
-    <el-table-column property="dealer" label="交易人" width="100" />
-    <el-table-column property="founder" label="创建人" width="100" />
-    <el-table-column property="currency" label="币种" width="100" />
-    <el-table-column property="type" label="类型" width="100" />
-    <el-table-column property="quantity" label="订单数量" width="100" />
-    <el-table-column property="amount" label="订单金额" width="100" />
-    <el-table-column property="commission" label="手续费" width="100" />
-    <el-table-column property="payment" label="支付方式" width="100" />
-    <el-table-column property="status" label="订单状态" width="100" />
-    <el-table-column property="address" label="操作" show-overflow-tooltip>
-      <el-button size="small" @click="view(tableData.values)">查看</el-button>
+    <el-table-column property="dealer" label="交易人" align="center" width="100" />
+    <el-table-column property="founder" label="创建人" align="center" width="100" />
+    <el-table-column property="currency" label="币种" align="center" width="100" />
+    <el-table-column property="type" label="类型" align="center" width="100" />
+    <el-table-column property="quantity" label="订单数量" align="center" width="100" />
+    <el-table-column property="amount" label="订单金额" align="center" width="100" />
+    <el-table-column property="commission" label="手续费" align="center" width="100" />
+    <el-table-column property="payment" label="支付方式" align="center" width="100" />
+    <el-table-column property="status" label="订单状态" align="center" width="100" />
+    <el-table-column property="address" label="操作" align="center" show-overflow-tooltip>
+      <template #default="scope">
+        <el-button size="small" @click="handleEdit(scope.row)">查看</el-button>
+      </template>
     </el-table-column>
   </el-table>
   <div class="tang">
@@ -72,7 +83,7 @@ import { RefreshRight } from '@element-plus/icons-vue';
 import { ElMessage, ElTable } from 'element-plus';
 import { onMounted, ref, watch } from 'vue';
 import dayjs from 'dayjs';
-import { TradingList } from '@/api/Financial/Fiat';
+import { TradingList, TradingLists } from '@/api/Financial/Fiat';
 
 interface User {
   order: string;
@@ -98,6 +109,7 @@ const value1 = ref('');
 const limit = ref(5);
 const page = ref(1);
 const total1 = ref('');
+const dialogTableVisible = ref(false);
 const options = [
   {
     value: '充值',
@@ -176,13 +188,19 @@ const getData = async () => {
     }
   }
 };
-const view = (index) => {
-  console.log(index);
+
+const handleEdit = (row: User) => {
+  getData();
+  dialogTableVisible.value = true;
 };
 const onSearch = () => {
   page.value = 1;
   fullscreenLoading.value = true;
   setTimeout(() => {
+    input21.value = '';
+    value.value = '';
+    input22.value = '';
+    value1.value = '';
     getData();
     fullscreenLoading.value = false;
   }, 1000);
@@ -215,6 +233,7 @@ const fn = () => {
   openFullScreen1();
   getData();
 };
+
 onMounted(async () => {
   await getData();
 });
@@ -229,32 +248,37 @@ onMounted(async () => {
 }
 .w-50 {
   width: 120px;
-  margin: 5px 5px 0px;
+  margin: 4.9984px 4.9984px 0px;
 }
 .demo-date-picker {
   display: inline-block;
 }
 ::v-deep .el-date-editor--daterange {
   width: 200px;
-  height: 38px;
-  margin: 5px 5px 0px;
+  height: 38.0032px;
+  margin: 4.9984px 4.9984px 0px;
 }
 .el-table--fit {
-  margin-top: 10px;
+  margin-top: 10.0032px;
 }
 // ::v-deep .el-input__inner {
 //   width: 100px;
 // }
 .el-pagination {
   // position: relative;
-  // bottom: -3px;
-  // left: 965px;
+  // bottom: -3.0016px;
+  // left: 964.9984px;
 }
 .tang {
   float: right;
   display: flex;
 }
+.my-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
 .jump {
-  width: 50px;
+  width: 50.0032px;
 }
 </style>

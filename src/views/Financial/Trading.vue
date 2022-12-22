@@ -29,10 +29,10 @@
   <el-button type="primary" @click="onSearch">搜索</el-button>
   <el-button type="success" @click="ExportXlsx">导出</el-button>
   <el-table :data="tableData" style="width: 100%" border>
-    <el-table-column prop="members" label="会员ID" style="width: 20%" />
-    <el-table-column prop="trading" label="交易类型" style="width: 20%" />
-    <el-table-column prop="amount" label="交易金额" style="width: 20%" />
-    <el-table-column prop="service" label="交易手续费" style="width: 20%" />
+    <el-table-column prop="members" label="会员ID" align="center" style="width: 20%" />
+    <el-table-column prop="trading" label="交易类型" align="center" style="width: 20%" />
+    <el-table-column prop="amount" label="交易金额" align="center" style="width: 20%" />
+    <el-table-column prop="service" label="交易手续费" align="center" style="width: 20%" />
     <el-table-column prop="time" label="交易时间" />
   </el-table>
   <div class="tang">
@@ -141,6 +141,13 @@ const ExportXlsx = () => {
 const openFullScreen1 = () => {
   fullscreenLoading.value = true;
   setTimeout(() => {
+    input.value = '';
+    input1.value = '';
+    input2.value = '';
+    input3.value = '';
+    input4.value = '';
+    value.value = '';
+    value1.value = '';
     getData();
     fullscreenLoading.value = false;
   }, 1000);
