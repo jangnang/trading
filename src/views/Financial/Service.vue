@@ -1,6 +1,6 @@
 <template>
   <div class="Hand">
-    提币明细
+    充币记录
     <el-button
       type="primary"
       :icon="RefreshRight"
@@ -15,27 +15,29 @@
   <el-input
     style="margin: 0px 5px 5px"
     v-model="input"
-    placeholder="请输入用户昵称查询"
+    placeholder="请输入充币地址查询"
     size:50px
   />
-  <el-input style="margin: 0px 5px 5px" v-model="input1" placeholder="请输入手机号查询" size:50px />
-  币种：<el-select style="margin: 0px 5px 5px" v-model="value" placeholder="Select">
+  币种：<el-select style="margin: 0px 5px 5px" v-model="value" placeholder="全部">
     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+  </el-select>
+  协议：<el-select style="margin: 0px 5px 5px" v-model="input1" placeholder="全部">
+    <el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value" />
   </el-select>
   <el-button style="margin: 0px 5px 5px" type="primary" @click="onSearch">搜索</el-button>
   <el-table :data="tableData" style="width: 100%" border>
-    <el-table-column property="txid" label="邮箱/手机号" align="center" style="width: 12.5%" />
-    <el-table-column property="name" label="充币币种" align="center" style="width: 12.5%" />
-    <el-table-column property="currency" label="协议名称" align="center" style="width: 12.5%" />
-    <el-table-column property="account" label="充币地址" align="center" style="width: 12.5%" />
-    <el-table-column property="commission" label="充币数量" align="center" style="width: 12.5%" />
+    <el-table-column property="mailbox" label="邮箱/手机号" align="center" style="width: 12.5%" />
+    <el-table-column property="money" label="充币币种" align="center" style="width: 12.5%" />
+    <el-table-column property="agreement" label="协议名称" align="center" style="width: 12.5%" />
+    <el-table-column property="address" label="充币地址" align="center" style="width: 12.5%" />
+    <el-table-column property="quantity" label="充币数量" align="center" style="width: 12.5%" />
     <el-table-column label="状态" align="center" style="width: 12.5%">
       <template #default="scope">
-        <el-tag style="cursor: pointer">{{ scope.row.name }}</el-tag>
+        <el-tag style="cursor: pointer">{{ scope.row.state }}</el-tag>
       </template>
     </el-table-column>
-    <el-table-column property="nickname" label="确认数" align="center" style="width: 12.5%" />
-    <el-table-column property="mailbox" label="到账时间" align="center" style="width: 12.5%" />
+    <el-table-column property="confirm" label="确认数" align="center" style="width: 12.5%" />
+    <el-table-column property="time" label="到账时间" align="center" style="width: 12.5%" />
   </el-table>
   <div class="tang">
     <el-pagination
@@ -54,7 +56,7 @@ import { ElMessage } from 'element-plus';
 import { onMounted, ref, watch } from 'vue';
 import dayjs from 'dayjs';
 import { exportExcel } from '@/api/export';
-import { TradingList } from '@/api/Financial/currency';
+import { TradingList } from '@/api/Financial/Service';
 
 const input = ref('');
 const input5 = ref();
@@ -79,6 +81,24 @@ const options = [
   {
     value: 'ETH',
     label: 'ETH',
+  },
+];
+const options1 = [
+  {
+    value: 'ETH Ethereum (ERC20)',
+    label: 'ETH Ethereum (ERC20)',
+  },
+  {
+    value: 'Bitcoin',
+    label: 'Bitcoin',
+  },
+  {
+    value: 'TRX Tron (TRC20)',
+    label: 'TRX Tron (TRC20)',
+  },
+  {
+    value: 'BSC Binance Smart Chain (BEP20)',
+    label: 'BSC Binance Smart Chain (BEP20)',
   },
 ];
 

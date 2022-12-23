@@ -19,7 +19,7 @@
     size:50px
   />
   <el-input style="margin: 0px 5px 5px" v-model="input1" placeholder="请输入手机号查询" size:50px />
-  币种：<el-select style="margin: 0px 5px 5px" v-model="value" placeholder="Select">
+  币种：<el-select style="margin: 0px 5px 5px" v-model="value" placeholder="全部">
     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
   </el-select>
   <el-button style="margin: 0px 5px 5px" type="primary" @click="onSearch">搜索</el-button>

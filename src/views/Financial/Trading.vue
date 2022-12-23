@@ -13,7 +13,7 @@
   <br />
   <hr />
   <el-input v-model="input" placeholder="输入用户id" size:50px />
-  交易类型：<el-select v-model="value" placeholder="Select">
+  交易类型：<el-select v-model="value" placeholder="全部">
     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
   </el-select>
   <br />

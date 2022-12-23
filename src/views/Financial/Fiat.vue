@@ -25,14 +25,14 @@
   />
   币种：<el-select
     v-model="value1"
-    placeholder="Select"
+    placeholder="全部"
     style="width: 150.0032px; margin: 0px 4.9984px"
   >
     <el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value" />
   </el-select>
   交易类型：<el-select
     v-model="value"
-    placeholder="Select"
+    placeholder="全部"
     style="width: 150.0032px; margin: 0px 4.9984px"
   >
     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
@@ -83,7 +83,7 @@ import { RefreshRight } from '@element-plus/icons-vue';
 import { ElMessage, ElTable } from 'element-plus';
 import { onMounted, ref, watch } from 'vue';
 import dayjs from 'dayjs';
-import { TradingList, TradingLists } from '@/api/Financial/Fiat';
+import { TradingList } from '@/api/Financial/Fiat';
 
 interface User {
   order: string;

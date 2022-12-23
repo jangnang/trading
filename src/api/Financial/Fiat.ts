@@ -6,7 +6,6 @@ export const TradingList = async ({
   trading,
   founder,
   currency,
-  editid,
   $limit = 10,
   $page = 1,
 }: any) => {
@@ -16,10 +15,6 @@ export const TradingList = async ({
   if (trading) queryStr += `&type=${trading}`;
   if (founder) queryStr += `&founder=${founder}`;
   if (currency) queryStr += `&currency=${currency}`;
-  const res = await $api.get(`/currency?$limit=${$limit}&$skip=${$skip}${queryStr}/${editid}`);
-  return res;
-};
-export const TradingLists = async ({ editid }: any) => {
-  const res = await $api.get(`/currency/${editid}`);
+  const res = await $api.get(`/currency?$limit=${$limit}&$skip=${$skip}${queryStr}`);
   return res;
 };

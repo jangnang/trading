@@ -12,7 +12,7 @@
   </div>
   <br />
   <hr />
-  交易类型：<el-select v-model="value" placeholder="Select">
+  交易类型：<el-select v-model="value" placeholder="全部">
     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
   </el-select>
   <div class="demo-date-picker">
