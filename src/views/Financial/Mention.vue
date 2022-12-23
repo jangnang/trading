@@ -25,19 +25,85 @@
   状态：<el-select style="margin: 0px 5px 5px; width: 120px" v-model="input4" placeholder="全部">
     <el-option v-for="item in options2" :key="item.value" :label="item.label" :value="item.value" />
   </el-select>
+  哈希：<el-input style="width: 120px" v-model="input6" placeholder="输入哈希值" size:50px />
+  提交时间：
   <div class="demo-date-picker">
     <div class="block">
-      <el-date-picker v-model="value1" type="daterange" start-placeholder="选择时间区间" />
+      <el-date-picker
+        style="width: 320px"
+        v-model="value1"
+        type="datetimerange"
+        start-placeholder="开始"
+        end-placeholder="结束"
+        :default-time="defaultTime2"
+      />
     </div>
   </div>
-  <el-button type="primary" @click="onSearch">搜索</el-button>
-  <el-button type="success" @click="ExportXlsx">导出</el-button>
+  审核时间：
+  <div class="demo-date-picker">
+    <div class="block">
+      <el-date-picker
+        style="width: 320px"
+        v-model="value2"
+        type="datetimerange"
+        start-placeholder="开始"
+        end-placeholder="结束"
+        :default-time="defaultTime2"
+      />
+    </div>
+  </div>
+  <br />
+  <el-button type="primary" @click="onSearch" size="small">搜索</el-button>
+  <el-button type="success" @click="ExportXlsx" size="small">导出</el-button>
   <el-table :data="tableData" style="width: 100%" border>
-    <el-table-column prop="members" label="会员ID" align="center" style="width: 20%" />
-    <el-table-column prop="trading" label="交易类型" align="center" style="width: 20%" />
-    <el-table-column prop="amount" label="交易金额" align="center" style="width: 20%" />
-    <el-table-column prop="service" label="交易手续费" align="center" style="width: 20%" />
-    <el-table-column prop="time" label="交易时间" />
+    <el-table-column property="mailbox" label="邮箱/手机号" align="center" style="width: 8.3vw" />
+    <el-table-column property="money" label="提现币种" align="center" style="width: 8.3vw" />
+    <el-table-column property="agreement" label="协议名称" align="center" style="width: 8.3vw" />
+    <el-table-column property="address" label="到账地址" align="center" style="width: 8.3vw" />
+    <el-table-column property="quantity" label="提现数量" align="center" style="width: 8.3vw" />
+    <el-table-column property="commission" label="手续费" align="center" style="width: 8.3vw" />
+    <el-table-column property="received" label="到账数量" align="center" style="width: 8.3vw" />
+    <el-table-column property="arrival" label="提现时间" align="center" style="width: 8.3vw" />
+    <el-table-column property="time" label="审核时间" align="center" style="width: 8.3vw" />
+    <el-table-column property="hash" label="Hash" align="center" style="width: 8.3vw" />
+    <el-table-column label="状态" align="center" style="width: 8.3vw">
+      <template #default="scope">
+        <template v-if="scope.row.state == 0">
+          <el-button type="danger" size="small">失败</el-button>
+        </template>
+        <template v-else-if="scope.row.state == 1">
+          <el-button type="info" size="small">驳回</el-button>
+        </template>
+        <template v-else-if="scope.row.state == 2">
+          <el-button type="success" size="small">待处理</el-button>
+        </template>
+        <template v-else-if="scope.row.state == 3">
+          <el-button type="warning" size="small">处理中</el-button>
+        </template>
+        <template v-else-if="scope.row.state == 4">
+          <el-button type="primary" size="small">已处理</el-button>
+        </template>
+      </template>
+    </el-table-column>
+    <el-table-column label="操作" align="center" style="width: 8.3vw">
+      <template #default="scope">
+        <template v-if="scope.row.operation == 0">
+          <el-button type="danger" size="small" @click="pack(scope.row)">重新打包</el-button>
+        </template>
+        <template v-else-if="scope.row.operation == 1">
+          <el-button type="info" size="small">提现已关闭</el-button>
+        </template>
+        <template v-else-if="scope.row.operation == 2">
+          <el-button type="success" size="small">等待中处理</el-button>
+        </template>
+        <template v-else-if="scope.row.operation == 3">
+          <el-button type="warning" size="small">正在处理</el-button>
+        </template>
+        <template v-else-if="scope.row.operation == 4">
+          <el-button type="primary" size="small">提现已完成</el-button>
+        </template>
+      </template>
+    </el-table-column>
   </el-table>
   <div class="tang">
     <el-pagination
@@ -53,12 +119,15 @@
 <script setup lang="ts">
 import { RefreshRight } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
-import { onMounted, ref, watch } from 'vue';
+import {
+  onMounted, ref, watch, reactive, toRefs,
+} from 'vue';
 import dayjs from 'dayjs';
 import { exportExcel } from '@/api/export';
-import { TradingList } from '@/api/Financial/Trading';
+import { TradingList } from '@/api/Financial/Mention';
 
 const input = ref('');
+const input6 = ref('');
 const input5 = ref();
 const input1 = ref('');
 const input2 = ref('');
@@ -66,6 +135,7 @@ const input3 = ref('');
 const input4 = ref('');
 const value = ref('');
 const value1 = ref('');
+const value2 = ref('');
 const limit = ref(5);
 const page = ref(1);
 const total1 = ref('');
@@ -107,29 +177,30 @@ const options1 = [
 ];
 const options2 = [
   {
-    value: '驳回',
+    value: '1',
     label: '驳回',
   },
   {
-    value: '待处理',
+    value: '2',
     label: '待处理',
   },
   {
-    value: '处理中',
+    value: '3',
     label: '处理中',
   },
   {
-    value: '已处理',
+    value: '4',
     label: '已处理',
   },
   {
-    value: '失败',
+    value: '0',
     label: '失败',
   },
 ];
-
-const tableData = ref([
+let tableData = reactive([
   {
+    state: '',
+    arrival: '',
     members: '',
     trading: '',
     amount: '',
@@ -138,7 +209,8 @@ const tableData = ref([
     currency: '',
   },
 ]);
-
+toRefs(tableData);
+const defaultTime2: [Date, Date] = [new Date(2000, 1, 1, 12, 0, 0), new Date(2000, 2, 1, 8, 0, 0)];
 const fullscreenLoading = ref(false);
 watch(input2, (count, prevCount) => {
   console.log(input2.value);
@@ -147,23 +219,27 @@ const getData = async () => {
   const res = await TradingList({
     $limit: limit.value,
     $page: page.value,
-    keyword: input.value,
-    trading: value.value,
-    amount: input1.value,
-    amount1: input2.value,
-    service: input3.value,
-    service1: input4.value,
-    createdAt: value1.value,
+    keyword: input.value, // 邮箱
+    trading: value.value, // 币种
+    amount: input1.value, // 手机号
+    amount1: input2.value, // 到账地址
+    service: input3.value, // 协议
+    service1: input4.value, // 状态
+    createdAt: value1.value, // 提交时间
+    createdAt1: value2.value, // 审核时间
+    hash: input6.value, // 哈希
   });
   const { status, data } = res;
 
   if (status === 200) {
-    tableData.value = data.data;
+    tableData = data.data;
     total1.value = data.total;
-    for (const index of tableData.value) {
+    for (const index of tableData) {
       const s = dayjs(index.time).format('YYYY-MM-DD HH:mm:ss');
+      const c = dayjs(index.arrival).format('YYYY-MM-DD HH:mm:ss');
       index.amount += index.currency;
       index.time = s;
+      index.arrival = c;
     }
   }
 };
@@ -174,13 +250,32 @@ const onSearch = () => {
   setTimeout(() => {
     getData();
     fullscreenLoading.value = false;
-  }, 1000);
+  }, 500);
+  console.log(input4.value);
+
   getData();
+};
+const pack = (index) => {
+  fullscreenLoading.value = true;
+  setTimeout(() => {
+    getData();
+    fullscreenLoading.value = false;
+  }, 500);
+  index.state = 3;
+  index.operation = 3;
+  ElMessage({
+    showClose: true,
+    message: '重新打包成功',
+    type: 'success',
+  });
+  console.log(index);
+
+  // getData();
 };
 const ExportXlsx = () => {
   const titleArr = ['id', '会员ID', '交易类型', '交易金额', '', '交易手续费', '交易时间', '', ''];
 
-  exportExcel(tableData.value, 'test', titleArr, 'sheetName');
+  exportExcel(tableData, 'test', titleArr, 'sheetName');
 };
 const openFullScreen1 = () => {
   fullscreenLoading.value = true;
@@ -194,7 +289,7 @@ const openFullScreen1 = () => {
     value1.value = '';
     getData();
     fullscreenLoading.value = false;
-  }, 1000);
+  }, 500);
 };
 input5.value = page.value;
 watch(page, (count, prevCount) => {
@@ -228,10 +323,7 @@ onMounted(async () => {
 .el-input {
   width: 200px;
 }
-.w-50 {
-  width: 120px;
-  margin: 5px 5px 0px;
-}
+
 .demo-date-picker {
   display: inline-block;
 }
@@ -243,11 +335,7 @@ onMounted(async () => {
 .el-table--fit {
   margin-top: 10px;
 }
-.el-pagination {
-  // position: relative;
-  // bottom: -3px;
-  // left: 965px;
-}
+
 .tang {
   float: right;
   display: flex;
