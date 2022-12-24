@@ -15,5 +15,6 @@ module.exports = {
     'no-param-reassign': 0,
     'no-undef': 0,
     'linebreak-style': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
   },
 };

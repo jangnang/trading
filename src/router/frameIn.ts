@@ -149,6 +149,21 @@ export default [
     component: () => import('@/views/System/Version.vue'),
   },
   {
+    path: 'Bulk',
+    name: 'Bulk',
+    component: () => import('@/views/System/Bulk.vue'),
+  },
+  {
+    path: 'Deploy',
+    name: 'Deploy',
+    component: () => import('@/views/System/Deploy.vue'),
+  },
+  {
+    path: 'Pact',
+    name: 'Pact',
+    component: () => import('@/views/System/Pact.vue'),
+  },
+  {
     path: 'Ensure',
     name: 'Ensure',
     component: () => import('@/views/Ensure/Ensure.vue'),

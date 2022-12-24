@@ -1,4 +1,8 @@
 <template>
+  <div>角色管理</div>
+</template>
+
+<!-- <template>
   <Content title="角色管理">
     <el-button type="primary" class="break">
       <el-icon><RefreshRight /></el-icon>
@@ -19,9 +23,9 @@
     </el-table>
     <el-pagination background layout="prev, pager, next" :total="10" class="page" />
   </Content>
-</template>
+</template> -->
 
-<script lang="ts" setup>
+<!-- <script lang="ts" setup>
 const tableData = [
   {
     date: '1',
@@ -34,9 +38,9 @@ const tableData = [
     address: '系统',
   },
 ];
-</script>
+</script> -->
 
-<style lang="scss" scoped>
+<!-- <style lang="scss" scoped>
 .break {
   position: absolute;
   top: 100px;
@@ -53,4 +57,4 @@ const tableData = [
 ::v-deep .el-table th.el-table__cell.is-leaf {
   background-color: rgb(250, 250, 250);
 }
-</style>
+</style> -->

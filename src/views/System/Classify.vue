@@ -1,4 +1,8 @@
 <template>
+  <div>币种管理</div>
+</template>
+
+<!-- <template>
   <Content title="币种管理">
     <el-button type="primary" class="break">
       <el-icon><RefreshRight /></el-icon>
@@ -88,4 +92,4 @@ const tableData = [
 ::v-deep .el-table th.el-table__cell.is-leaf {
   background-color: rgb(250, 250, 250);
 }
-</style>
+</style> -->
