@@ -1,37 +1,123 @@
 <template>
   <div class="management">
     <div class="currency">
-      <div class="head">
-        <p>
-          <span class="active">法币交易</span>
-          <span>币币交易</span>
-          <span class="detail">明细</span>
-        </p>
-      </div>
+      <el-tabs v-model="activeName" class="demo-tabs">
+        <el-tab-pane label="法币交易" name="first">
+          <el-table :data="tableData" stripe style="width: 100%">
+            <el-table-column prop="date" label="币种" align="center" style="width: 33.33%" />
+            <el-table-column prop="name" label="成交量" align="center" style="width: 33.33%" />
+            <el-table-column
+              prop="address"
+              label="交易额"
+              align="center"
+              style="width: 33.33%"
+            /> </el-table
+        ></el-tab-pane>
+        <el-tab-pane label="币币交易" name="second">
+          <el-table :data="tableData" stripe style="width: 100%">
+            <el-table-column prop="date" label="币种" align="center" style="width: 33.33%" />
+            <el-table-column prop="name" label="成交量" align="center" style="width: 33.33%" />
+            <el-table-column
+              prop="address"
+              label="交易额"
+              align="center"
+              style="width: 33.33%"
+            /> </el-table
+        ></el-tab-pane>
+      </el-tabs>
+      <el-link :underline="false" @click="fn">明细</el-link>
     </div>
     <div class="Bibi">
       <div class="head">
-        <p>
-          <span class="active">法币交易</span>
-          <span>币币交易</span>
-          <span>提币</span>
-          <span class="detail">明细</span>
-        </p>
+        <el-tabs v-model="activeName1" class="demo-tabs">
+          <el-tab-pane label="法币交易" name="first1">
+            <el-table :data="tableData" style="width: 100%">
+              <el-table-column prop="date" label="币种" align="center" style="width: 50%" />
+              <el-table-column
+                prop="name"
+                label="手续费"
+                align="center"
+                style="width: 50%"
+              /> </el-table
+          ></el-tab-pane>
+          <el-tab-pane label="币币交易" name="second">
+            <el-table :data="tableData" style="width: 100%">
+              <el-table-column prop="date" label="币种" align="center" style="width: 50%" />
+              <el-table-column
+                prop="name"
+                label="手续费"
+                align="center"
+                style="width: 50%"
+              /> </el-table
+          ></el-tab-pane>
+          <el-tab-pane label="提币" name="third">
+            <el-table :data="tableData" style="width: 100%">
+              <el-table-column prop="date" label="币种" align="center" style="width: 50%" />
+              <el-table-column
+                prop="name"
+                label="手续费"
+                align="center"
+                style="width: 50%"
+              /> </el-table
+          ></el-tab-pane>
+        </el-tabs>
+        <el-link :underline="false" @click="fn1">明细</el-link>
       </div>
     </div>
     <div class="filling">
       <div class="head">
-        <p>
-          <span class="active">充币</span>
-          <span>提币</span>
-          <span class="detail">明细</span>
-        </p>
+        <el-tabs v-model="activeName2" class="demo-tabs">
+          <el-tab-pane label="充币" name="first2">
+            <el-table :data="tableData" style="width: 100%">
+              <el-table-column prop="date" label="币种" align="center" style="width: 50%" />
+              <el-table-column prop="name" label="充币总数" align="center" style="width: 50%" />
+            </el-table>
+          </el-tab-pane>
+          <el-tab-pane label="提币" name="second">
+            <el-table :data="tableData" style="width: 100%">
+              <el-table-column prop="date" label="币种" align="center" style="width: 50%" />
+              <el-table-column
+                prop="name"
+                label="提币总数"
+                align="center"
+                style="width: 50%"
+              /> </el-table
+          ></el-tab-pane>
+        </el-tabs>
+        <el-link :underline="false" @click="fn2">明细</el-link>
       </div>
     </div>
   </div>
 </template>
 <script>
-const div1 = document.querySelector('.currency');
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  data() {
+    return {
+      activeName: 'first',
+      activeName1: 'first1',
+      activeName2: 'first2',
+    };
+  },
+  methods: {
+    fn() {
+      this.$router.push({
+        name: 'Fiat',
+      });
+    },
+    fn1() {
+      this.$router.push({
+        name: 'Fiat',
+      });
+    },
+    fn2() {
+      this.$router.push({
+        name: 'Fiat',
+      });
+    },
+  },
+});
 </script>
 <style lang="scss" scoped>
 .management {
@@ -40,57 +126,40 @@ const div1 = document.querySelector('.currency');
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  background: gainsboro;
 }
 .currency {
   width: 40vw;
   height: 35vh;
   margin-left: 2vw;
-  background: hotpink;
+  margin-top: 3vh;
+  background: rgb(255, 255, 255);
   position: relative;
 }
 .Bibi {
   width: 40vw;
   height: 35vh;
-  background: rgb(57, 48, 131);
+  background: rgb(255, 255, 255);
   margin-left: 6vw;
+  margin-top: 3vh;
   position: relative;
 }
 .filling {
   margin-left: 2vw;
   width: 40vw;
   height: 35vh;
-  background: rgb(215, 208, 20);
+  background: rgb(255, 255, 255);
   position: relative;
 }
-.head {
-  width: 100%;
-  height: 40px;
-  border-bottom: cornsilk 1px solid;
+::v-deep .el-tabs__nav {
+  margin-left: 25px;
 }
-.active {
-  position: relative;
-  font-weight: 600;
-  color: #2d8cf0;
-  left: 15px;
-  cursor: pointer;
+::v-deep .el-tabs__nav .el-tabs__active-bar {
+  margin-left: 25px;
 }
-.active:after {
+::v-deep .el-link__inner {
   position: absolute;
-  left: 0;
-  bottom: -20px;
-  content: ' ';
-  width: 100%;
-  height: 0;
-  border-top: 3px solid #2d8cf0;
-}
-span {
-  margin-left: 30px;
-  cursor: pointer;
-}
-.detail {
-  position: absolute;
-  right: 20px;
-  color: #2b85e4;
-  cursor: pointer;
+  top: -155px;
+  right: -500px;
 }
 </style>
