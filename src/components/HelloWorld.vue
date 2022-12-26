@@ -1,7 +1,7 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header>Header</el-header>
+      <el-header></el-header>
       <el-container>
         <el-aside width="wid">
           <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
