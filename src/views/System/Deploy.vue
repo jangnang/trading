@@ -1,22 +1,27 @@
 <template>
-  <Content title="系统信息维护">
+  <Content title="归集配置管理">
     <el-button type="primary" class="break" @click="handleRenovate()">
       <el-icon><RefreshRight /></el-icon>
       刷新
     </el-button>
     <el-divider />
 
-    <el-button type="primary" class="add" @click="dialogFormVisible = true"> 新增 </el-button>
-    <el-dialog v-model="dialogFormVisible" title="新增">
+    <el-button type="primary" class="add" @click="dialogFormVisible = true">
+      添加归集配置
+    </el-button>
+    <el-dialog v-model="dialogFormVisible" title="添加协议" width="70%">
       <el-form :model="form">
-        <el-form-item label="键" :label-width="formLabelWidth">
-          <el-input v-model="form.key" autocomplete="off" />
+        <el-form-item label="币种名称" :label-width="formLabelWidth">
+          <el-input v-model="form.currency" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="值" :label-width="formLabelWidth">
-          <el-input v-model="form.value" autocomplete="off" />
+        <el-form-item label="协议名称" :label-width="formLabelWidth">
+          <el-input v-model="form.deal" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="备注" :label-width="formLabelWidth">
-          <el-input v-model="form.address" autocomplete="off" />
+        <el-form-item label="最低归集数量：" :label-width="formLabelWidth">
+          <el-input v-model="form.number" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="归集地址" :label-width="formLabelWidth">
+          <el-input v-model="form.site" autocomplete="off" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -28,12 +33,10 @@
     </el-dialog>
 
     <el-table :data="tableData" border style="width: 100%; margin-bottom: 10px">
-      <el-table-column align="center" prop="id" label="ID" width="100" />
-      <el-table-column align="center" prop="key" label="键" />
-      <el-table-column align="center" prop="value" label="值" />
-      <el-table-column align="center" prop="address" label="备注" />
-      <el-table-column align="center" prop="createdAt" label="创建时间" />
-      <el-table-column align="center" prop="updatedAt" label="更新时间" />
+      <el-table-column align="center" prop="currency" label="币种名称" width="100" />
+      <el-table-column align="center" prop="deal" label="协议名称" />
+      <el-table-column align="center" prop="number" label="最低归集数量：" />
+      <el-table-column align="center" prop="site" label="归集地址" />
       <el-table-column align="center" fixed="right" label="操作">
         <template #default>
           <el-button type="primary" size="small">修改</el-button>
@@ -41,49 +44,38 @@
       </el-table-column>
     </el-table>
 
-    <el-pagination background layout="prev, pager, next" :total="10" />
+    <el-pagination background layout="prev, pager, next,sizes" :total="10" class="page" />
   </Content>
 </template>
-
 <script>
 import { defineComponent } from 'vue';
 import { ElMessage } from 'element-plus';
 import axios from 'axios';
-import dayjs from 'dayjs';
-import MianApi from '@/api/mian';
+import DeployApi from '@/api/deploy';
 
 export default defineComponent({
-  name: 'maintenancePage',
+  name: 'deployPage',
   data() {
     return {
       form: {
-        key: '',
-        value: '',
-        address: '',
+        currency: '',
+        deal: '',
+        number: '',
+        site: '',
       },
       dialogFormVisible: false,
-      formLabelWidth: '100px',
+      formLabelWidth: '120px',
       tableData: [
         {
-          id: '',
-          key: '',
-          value: '',
-          address: '',
-          createdAt: '',
-          updatedAt: '',
+          currency: '',
+          deal: '',
+          number: '',
+          site: '',
         },
       ],
     };
   },
-  watch: {
-    key(nv) {
-      console.log(nv);
-    },
-  },
   created() {
-    this.getData();
-  },
-  mounted() {
     this.getData();
   },
   methods: {
@@ -93,31 +85,26 @@ export default defineComponent({
     },
     // 获取列表
     async getData() {
-      const res = await MianApi.getEventList({});
+      const res = await DeployApi.getEventList({});
       console.log('res', res);
       const { status, data } = res;
       if (status === 200) {
         this.tableData = data.data;
         console.log(this.tableData);
-        for (const index of this.tableData) {
-          const s = dayjs(index.createdAt).format('YYYY-MM-DD HH:mm:ss');
-          index.createdAt = s;
-        }
-        for (const index of this.tableData) {
-          const h = dayjs(index.updatedAt).format('YYYY-MM-DD HH:mm:ss');
-          index.updatedAt = h;
-        }
       }
     },
     // 添加数据
     async confirm() {
       console.log('添加', this.form);
-      const { key, value, address } = this.form;
+      const {
+        currency, deal, number, site,
+      } = this.form;
 
-      const res = await MianApi.addEvent({
-        key,
-        value,
-        address,
+      const res = await DeployApi.addEvent({
+        currency,
+        deal,
+        number,
+        site,
       });
       console.log('res', res);
 
@@ -134,9 +121,10 @@ export default defineComponent({
 
         // 清空表单
         this.form = {
-          key: '',
-          value: '',
-          address: '',
+          currency,
+          deal,
+          number,
+          site,
         };
 
         // 重新获取页面数据
@@ -151,18 +139,11 @@ export default defineComponent({
 .break {
   position: absolute;
   top: 100px;
-
-  right: 20px;
+  right: 25px;
 }
 .add {
   float: right;
   margin-bottom: 20px;
-  margin-left: 5px;
-}
-.del {
-  float: right;
-  margin-bottom: 20px;
-  margin-left: 5px;
 }
 
 ::v-deep .el-table thead {
@@ -171,18 +152,5 @@ export default defineComponent({
 
 ::v-deep .el-table th.el-table__cell.is-leaf {
   background-color: rgb(250, 250, 250);
-}
-
-.el-button--text {
-  margin-right: 15px;
-}
-.el-select {
-  width: 300px;
-}
-.el-input {
-  width: 300px;
-}
-.dialog-footer button:first-child {
-  margin-right: 10px;
 }
 </style>
