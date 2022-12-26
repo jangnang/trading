@@ -60,33 +60,12 @@
             <el-radio label="2" size="small">禁用</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="最低充值金额：" :label-width="formLabelWidth">
-          <el-input v-model="form.name" value="0" placeholder="请输入" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="充值确认数：" :label-width="formLabelWidth">
-          <el-input v-model="form.name" value="3" placeholder="请输入" autocomplete="off" />
-        </el-form-item>
         <p>提现设置</p>
         <el-form-item label="是否可提现：" style="margin-left: 55px">
           <el-radio-group v-model="form.deposit">
             <el-radio label="1" size="small">启用</el-radio>
             <el-radio label="2" size="small">禁用</el-radio>
           </el-radio-group>
-        </el-form-item>
-        <el-form-item label="提现费率：" :label-width="formLabelWidth">
-          <el-input v-model="form.name" value="0" placeholder="请输入" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="最低手续费：" :label-width="formLabelWidth">
-          <el-input v-model="form.name" value="0" placeholder="请输入" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="最小提现数量：" :label-width="formLabelWidth">
-          <el-input v-model="form.name" value="0" placeholder="请输入" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="最大提现数量：" :label-width="formLabelWidth">
-          <el-input v-model="form.name" value="0" placeholder="请输入" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="备注码充值的地址：" :label-width="formLabelWidth">
-          <el-input v-model="form.name" placeholder="请输入" autocomplete="off" />
         </el-form-item>
       </el-form>
       <template #footer>
