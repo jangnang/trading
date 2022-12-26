@@ -1,5 +1,5 @@
 <template>
-  <Content title="币种扩展管理">
+  <Content title="币种协议管理">
     <el-button type="primary" class="break" @click="handleRenovate()">
       <el-icon><RefreshRight /></el-icon>
       刷新

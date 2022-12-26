@@ -117,9 +117,9 @@
                 <el-menu-item index="Permissions">权限管理</el-menu-item>
                 <el-menu-item index="Maintenance">系统信息维护</el-menu-item>
                 <el-menu-item index="Version">版本管理</el-menu-item>
-                <el-menu-item index="Bulk">币种扩展管理</el-menu-item>
+                <el-menu-item index="Pact">币种扩展管理</el-menu-item>
                 <el-menu-item index="Deploy">归集配置列表</el-menu-item>
-                <el-menu-item index="Pact">币种协议管理</el-menu-item>
+                <el-menu-item index="Bulk">币种协议管理</el-menu-item>
               </el-menu-item-group>
             </el-sub-menu>
             <el-sub-menu index="10">
