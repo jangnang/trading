@@ -17,7 +17,16 @@
       </el-table-column>
     </el-table>
 
-    <el-pagination background layout="prev, pager, next,sizes" :total="10" class="page" />
+    <el-pagination
+      small
+      background
+      layout="prev, pager, next,sizes"
+      :total="total"
+      class="mt-4"
+      :page-sizes="[5, 10, 30, 50]"
+      @size-change="handleSizeChange"
+      @current-change="handlePageChange"
+    />
   </Content>
 </template>
 
@@ -25,12 +34,15 @@
 import { defineComponent } from 'vue';
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
-import VersionApi from '@/api/version';
+import VersionApi from '@/api/System/version';
 
 export default defineComponent({
   name: 'versionPage',
   data() {
     return {
+      page: 1,
+      total: 0,
+      limit: 10,
       tableData: [
         {
           date: '1',
@@ -43,18 +55,37 @@ export default defineComponent({
   created() {
     this.getData();
   },
+  mounted() {
+    this.getData();
+  },
+  watch: {
+    page(nv) {
+      console.log('页码的值', nv);
+    },
+  },
   methods: {
     handleRenovate() {
       window.location.reload();
     },
+    handlePageChange(res) {
+      console.log('页面发生了变化', res);
+      this.page = res;
+      this.getData();
+    },
+    handleSizeChange(res) {
+      console.log('每页条数发生变化', res);
+      this.limit = res;
+      this.getData();
+    },
     // 获取列表
     async getData() {
-      const res = await VersionApi.getEventList({});
+      const res = await VersionApi.getEventList({ $limit: this.limit, $page: this.page });
       console.log('res', res);
       const { status, data } = res;
       if (status === 200) {
         this.tableData = data.data;
         console.log(this.tableData);
+        this.total = data.total;
       }
     },
   },
