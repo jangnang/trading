@@ -39,6 +39,7 @@
   </el-select>
 
   <el-button type="primary" @click="onSearch">搜索</el-button>
+  <el-button type="primary" @click="postadd">新增</el-button>
 
   <el-table
     ref="multipleTableRef"
@@ -63,7 +64,10 @@
     <el-table-column property="status" label="订单状态" align="center" width="100" />
     <el-table-column property="address" label="操作" align="center" show-overflow-tooltip>
       <template #default="scope">
-        <el-button size="small" @click="handleEdit(scope.row)">查看</el-button>
+        <el-button size="small" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
+        <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)"
+          >删除</el-button
+        >
       </template>
     </el-table-column>
   </el-table>
@@ -77,13 +81,109 @@
       @current-change="onPageChange"
     />跳至<el-input v-model="input5" class="jump" @change="fn" windth />页
   </div>
+
+  <el-dialog v-model="dialogFormVisible" title="Shipping address">
+    <el-form :model="form">
+      <el-form-item label="订单编号" :label-width="formLabelWidth">
+        <el-input v-model="form.order" autocomplete="off" disabled />
+      </el-form-item>
+      <el-form-item label="交易时间" :label-width="formLabelWidth">
+        <el-input v-model="form.ttime" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="交易人" :label-width="formLabelWidth">
+        <el-input v-model="form.dealer" autocomplete="off" disabled />
+      </el-form-item>
+      <el-form-item label="创建人" :label-width="formLabelWidth">
+        <el-input v-model="form.founder" autocomplete="off" disabled />
+      </el-form-item>
+      <el-form-item label="币种" :label-width="formLabelWidth">
+        <el-input v-model="form.currency" autocomplete="off" disabled />
+      </el-form-item>
+      <el-form-item label="类型" :label-width="formLabelWidth">
+        <el-input v-model="form.type" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="订单数量" :label-width="formLabelWidth">
+        <el-input v-model="form.quantity" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="订单金额" :label-width="formLabelWidth">
+        <el-input v-model="form.amount" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="手续费" :label-width="formLabelWidth">
+        <el-input v-model="form.commission" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="支付方式" :label-width="formLabelWidth">
+        <el-input v-model="form.payment" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="订单状态" :label-width="formLabelWidth">
+        <el-input v-model="form.status" autocomplete="off" />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="dialogFormVisible1"> 确认修改 </el-button>
+      </span>
+    </template>
+  </el-dialog>
+  <el-dialog v-model="centerDialogVisible" title="新增" width="30%" align-center>
+    <el-form
+      :label-position="right"
+      label-width="100px"
+      :model="formLabelAlign"
+      style="max-width: 460px"
+    >
+      <el-form-item label="订单编号">
+        <el-input v-model="formLabelAlign.order" />
+      </el-form-item>
+      <el-form-item label="订单日期">
+        <el-input v-model="formLabelAlign.ttime" />
+      </el-form-item>
+      <el-form-item label="交易人">
+        <el-input v-model="formLabelAlign.dealer" />
+      </el-form-item>
+      <el-form-item label="创建人">
+        <el-input v-model="formLabelAlign.founder" />
+      </el-form-item>
+      <el-form-item label="币种">
+        <el-input v-model="formLabelAlign.currency" />
+      </el-form-item>
+      <el-form-item label="类型">
+        <el-input v-model="formLabelAlign.type" />
+      </el-form-item>
+      <el-form-item label="订单数量">
+        <el-input v-model="formLabelAlign.quantity" />
+      </el-form-item>
+      <el-form-item label="订单金额">
+        <el-input v-model="formLabelAlign.amount" />
+      </el-form-item>
+      <el-form-item label="手续费">
+        <el-input v-model="formLabelAlign.commission" />
+      </el-form-item>
+      <el-form-item label="支付方式">
+        <el-input v-model="formLabelAlign.payment" />
+      </el-form-item>
+      <el-form-item label="订单状态">
+        <el-input v-model="formLabelAlign.status" />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="centerDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="postad1"> 确认 </el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 <script setup lang="ts">
 import { RefreshRight } from '@element-plus/icons-vue';
 import { ElMessage, ElTable } from 'element-plus';
-import { onMounted, ref, watch } from 'vue';
+import {
+  onMounted, ref, watch, reactive,
+} from 'vue';
 import dayjs from 'dayjs';
-import { TradingList } from '@/api/Financial/Fiat';
+import {
+  TradingList, addKfc, delEvent, editEvent,
+} from '@/api/Financial/Fiat';
 
 interface User {
   order: string;
@@ -109,7 +209,9 @@ const value1 = ref('');
 const limit = ref(5);
 const page = ref(1);
 const total1 = ref('');
-const dialogTableVisible = ref(false);
+const visible = ref(false);
+const centerDialogVisible = ref(false);
+const dialogFormVisible = ref(false);
 const options = [
   {
     value: '充值',
@@ -146,6 +248,34 @@ const options1 = [
     label: 'ETH',
   },
 ];
+const formLabelAlign = reactive({
+  order: '',
+  ttime: '',
+  dealer: '',
+  founder: '',
+  currency: '',
+  type: '',
+  quantity: '',
+  amount: '',
+  commission: '',
+  payment: '',
+  status: '',
+});
+let form = reactive({
+  id: '',
+  order: '',
+  ttime: '',
+  dealer: '',
+  founder: '',
+  currency: '',
+  type: '',
+  quantity: '',
+  amount: '',
+  commission: '',
+  payment: '',
+  status: '',
+});
+const formLabelWidth = '140px';
 const handleSelectionChange = (val: User[]) => {
   multipleSelection.value = val;
 };
@@ -188,10 +318,58 @@ const getData = async () => {
     }
   }
 };
+const postadd = () => {
+  centerDialogVisible.value = true;
+  console.log(formLabelAlign);
+};
+const postad1 = () => {
+  console.log(formLabelAlign);
+  centerDialogVisible1();
+};
+// eslint-disable-next-line consistent-return
+const centerDialogVisible1 = async () => {
+  const res = await addKfc({ ...formLabelAlign });
+  const { status } = res;
+  if (status !== 201) return ElMessage('添加失败');
+  ElMessage({
+    message: '添加成功',
+    type: 'success',
+  });
+  centerDialogVisible.value = false;
 
-const handleEdit = (row: User) => {
   getData();
-  dialogTableVisible.value = true;
+};
+// eslint-disable-next-line consistent-return
+const dialogFormVisible1 = async () => {
+  console.log(form);
+  const { id, ...text } = form;
+  const res = await editEvent(id, text);
+  const { status } = res;
+  if (status !== 200) return ElMessage('修改失败');
+  ElMessage({
+    message: '修改成功',
+    type: 'success',
+  });
+  dialogFormVisible.value = false;
+  getData();
+};
+const handleEdit = (index: number, row: User) => {
+  form = row;
+  getData();
+  dialogFormVisible.value = true;
+  console.log(index, row);
+};
+// eslint-disable-next-line consistent-return
+const handleDelete = async (index: number, row: User) => {
+  console.log(index, row);
+  const res = await delEvent(row.id);
+  const { status } = res;
+  if (status !== 200) return ElMessage('删除失败');
+  ElMessage({
+    message: '删除成功',
+    type: 'success',
+  });
+  getData();
 };
 const onSearch = () => {
   page.value = 1;

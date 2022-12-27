@@ -19,5 +19,6 @@ module.exports = {
     'no-shadow': 0,
     'no-prototype-builtins': 0,
     'no-bitwise': 0,
+    'no-use-before-define': 0,
   },
 };

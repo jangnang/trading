@@ -1,128 +1,94 @@
 <template>
-  <el-menu default-active="2" class="el-menu-vertical-demo" @select="attribute">
-    <el-sub-menu index="1">
-      <template #title>
-        <el-icon><location /></el-icon>
-        <span>会员管理</span>
-      </template>
-      <el-menu-item-group>
-        <el-menu-item index="management">会员管理</el-menu-item>
-        <el-menu-item index="real-name">实名管理</el-menu-item>
-        <el-menu-item index="balance">余额管理</el-menu-item>
-      </el-menu-item-group>
-    </el-sub-menu>
-    <el-sub-menu index="2">
-      <template #title>
-        <el-icon><location /></el-icon>
-        <span>邀请管理</span>
-      </template>
-      <el-menu-item-group>
-        <el-menu-item index="Record">邀请记录</el-menu-item>
-        <el-menu-item index="Ranking">邀请排名</el-menu-item>
-      </el-menu-item-group>
-    </el-sub-menu>
-    <el-sub-menu index="3">
-      <template #title>
-        <el-icon><location /></el-icon>
-        <span>CTC管理</span>
-      </template>
-      <el-menu-item-group>
-        <el-menu-item index="Order">订单列表</el-menu-item>
-        <el-menu-item index="Rxchang">承兑商列表</el-menu-item>
-      </el-menu-item-group>
-    </el-sub-menu>
-    <el-sub-menu index="4">
-      <template #title>
-        <el-icon><location /></el-icon>
-        <span>内容管理管理</span>
-      </template>
-      <el-menu-item-group>
-        <el-menu-item index="Advertising">广告管理</el-menu-item>
-        <el-menu-item index="Help">帮助管理</el-menu-item>
-        <el-menu-item index="Announcement">公告管理</el-menu-item>
-      </el-menu-item-group>
-    </el-sub-menu>
-    <el-sub-menu index="5">
-      <template #title>
-        <el-icon><location /></el-icon>
-        <span>财务管理</span>
-      </template>
-      <el-menu-item-group>
-        <el-menu-item index="Trading">交易明细</el-menu-item>
-        <el-menu-item index="Mention">提币审核</el-menu-item>
-        <el-menu-item index="Charge">手续费管理</el-menu-item>
-        <el-menu-item index="Service">充币记录</el-menu-item>
-        <el-menu-item index="Fiat">法币交易明细</el-menu-item>
-        <el-menu-item index="Detail">提币明细</el-menu-item>
-        <el-menu-item index="Financial">财务统计</el-menu-item>
-      </el-menu-item-group>
-    </el-sub-menu>
-    <el-sub-menu index="6">
-      <template #title>
-        <el-icon><location /></el-icon>
-        <span>币币管理</span>
-      </template>
-      <el-menu-item-group>
-        <el-menu-item index="Order">订单管理</el-menu-item>
-        <el-menu-item index="Setup">币币设置</el-menu-item>
-      </el-menu-item-group>
-    </el-sub-menu>
-    <el-sub-menu index="7">
-      <template #title>
-        <el-icon><location /></el-icon>
-        <span>活动管理</span>
-      </template>
-      <el-menu-item-group>
-        <el-menu-item index="Activity">活动管理</el-menu-item>
-      </el-menu-item-group>
-    </el-sub-menu>
-    <el-sub-menu index="8">
-      <template #title>
-        <el-icon><location /></el-icon>
-        <span>红包管理</span>
-      </template>
-      <el-menu-item-group>
-        <el-menu-item index="Activity">红包列表</el-menu-item>
-      </el-menu-item-group>
-    </el-sub-menu>
-    <el-sub-menu index="9">
-      <template #title>
-        <el-icon><location /></el-icon>
-        <span>系统管理</span>
-      </template>
-      <el-menu-item-group>
-        <el-menu-item index="Role">角色管理</el-menu-item>
-        <el-menu-item index="User">用户管理</el-menu-item>
-        <el-menu-item index="Repartment">部门管理</el-menu-item>
-        <el-menu-item index="System">系统日志</el-menu-item>
-        <el-menu-item index="Classify">币种管理</el-menu-item>
-        <el-menu-item index="Permissions">权限管理</el-menu-item>
-        <el-menu-item index="Maintenance">系统信息维护</el-menu-item>
-        <el-menu-item index="Version">版本管理</el-menu-item>
-      </el-menu-item-group>
-    </el-sub-menu>
-    <el-sub-menu index="10">
-      <template #title>
-        <el-icon><location /></el-icon>
-        <span>保证金管理</span>
-      </template>
-      <el-menu-item-group>
-        <el-menu-item index="Ensure">查询保证金策略</el-menu-item>
-      </el-menu-item-group>
-    </el-sub-menu>
-    <el-sub-menu index="11">
-      <template #title>
-        <el-icon><location /></el-icon>
-        <span> OTC管理</span>
-      </template>
-      <el-menu-item-group>
-        <el-menu-item index="Advertising">后台广告</el-menu-item>
-        <el-menu-item index="Complaint">后台申述</el-menu-item>
-        <el-menu-item index="Order">订单管理</el-menu-item>
-        <el-menu-item index="Currency">币种管理</el-menu-item>
-        <el-menu-item index="Surrender">退保管理</el-menu-item>
-        <el-menu-item index="Certification">认证商家</el-menu-item>
-      </el-menu-item-group>
-    </el-sub-menu>
-  </el-menu>
+  <!--  ECharts默认宽高是0，如果不设置页面是不显示的-->
+  <div ref="mychart" id="demoDIV"></div>
 </template>
+
+<script>
+// 1:引用echarts
+import * as echarts from 'echarts';
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  name: 'The',
+  data() {
+    return {};
+  },
+  mounted() {
+    const myChart = echarts.init(this.$refs.mychart);
+    // 设置参数
+    myChart.setOption({
+      // echarts标题
+      // 传入x轴参数
+      title: {
+        text: '三，四季度注册认证人数',
+      },
+      tooltip: {
+        trigger: 'axis',
+      },
+      legend: {
+        data: ['邮箱注册', '手机号注册', '未实名认证', '已实名认证', '双重绑定'],
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true,
+      },
+      // toolbox: {
+      //   feature: {
+      //     saveAsImage: {},
+      //   },
+      // },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: ['七月', '八月', '九月', '十月', '十一月', '十二月'],
+      },
+      yAxis: {
+        type: 'value',
+      },
+      series: [
+        {
+          name: '邮箱注册',
+          type: 'line',
+          stack: 'Total',
+          data: [132, 101, 134, 90, 230, 210],
+        },
+        {
+          name: '手机号注册',
+          type: 'line',
+          stack: 'Total',
+          data: [182, 191, 234, 290, 330, 310],
+        },
+        {
+          name: '未实名认证',
+          type: 'line',
+          stack: 'Total',
+          data: [232, 201, 154, 190, 330, 410],
+        },
+        {
+          name: '已实名认证',
+          type: 'line',
+          stack: 'Total',
+          data: [332, 301, 334, 390, 330, 320],
+        },
+        {
+          name: '双重绑定',
+          type: 'line',
+          stack: 'Total',
+          data: [932, 901, 934, 1290, 1330, 1320],
+        },
+      ],
+    });
+  },
+});
+</script>
+
+<style>
+#demoDIV {
+  width: 80%;
+  height: 300px;
+  margin-left: 60px;
+  background: floralwhite;
+}
+</style>
