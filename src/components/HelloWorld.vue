@@ -1,13 +1,18 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header></el-header>
+      <el-header>
+        <el-breadcrumb separator="/" class="sds">
+          <el-breadcrumb-item :to="{ path: '/index' }">首页</el-breadcrumb-item>
+          <el-breadcrumb-item :to="{ path: `/${d}` }">{{ c }}</el-breadcrumb-item>
+        </el-breadcrumb></el-header
+      >
       <el-container>
         <el-aside width="wid">
           <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
             <el-radio-button :label="true" :style="{ display: ce, left: 120 + 'px' }" @click="fn1"
-              ><el-icon size="25px"><Fold /></el-icon
-            ></el-radio-button>
+              ><el-icon size="25px"><Fold /></el-icon>
+            </el-radio-button>
             <el-radio-button :label="false" :style="{ display: cl }" @click="fn"
               ><el-icon size="25px"><Expand /></el-icon
             ></el-radio-button>
@@ -23,8 +28,8 @@
                 <el-icon><UserFilled /></el-icon>
                 <span>会员管理</span>
               </template>
-              <el-menu-item-group>
-                <el-menu-item index="management">会员管理</el-menu-item>
+              <el-menu-item-group @click="fn2">
+                <el-menu-item index="management" path="会员管理">会员管理</el-menu-item>
                 <el-menu-item index="real-name">实名管理</el-menu-item>
                 <el-menu-item index="balance">余额管理</el-menu-item>
               </el-menu-item-group>
@@ -34,7 +39,7 @@
                 <el-icon><Share /></el-icon>
                 <span>邀请管理</span>
               </template>
-              <el-menu-item-group>
+              <el-menu-item-group @click="fn2">
                 <el-menu-item index="Record">邀请记录</el-menu-item>
                 <el-menu-item index="Ranking">邀请排名</el-menu-item>
               </el-menu-item-group>
@@ -44,7 +49,7 @@
                 <el-icon><Tools /></el-icon>
                 <span>CTC管理</span>
               </template>
-              <el-menu-item-group>
+              <el-menu-item-group @click="fn2">
                 <el-menu-item index="Order">订单列表</el-menu-item>
                 <el-menu-item index="Rxchang">承兑商列表</el-menu-item>
               </el-menu-item-group>
@@ -54,7 +59,7 @@
                 <el-icon><Tools /></el-icon>
                 <span>内容管理管理</span>
               </template>
-              <el-menu-item-group>
+              <el-menu-item-group @click="fn2">
                 <el-menu-item index="Advertising">广告管理</el-menu-item>
                 <el-menu-item index="Help">帮助管理</el-menu-item>
                 <el-menu-item index="Announcement">公告管理</el-menu-item>
@@ -65,7 +70,7 @@
                 <el-icon><WalletFilled /></el-icon>
                 <span>财务管理</span>
               </template>
-              <el-menu-item-group>
+              <el-menu-item-group @click="fn2">
                 <el-menu-item index="Trading">交易明细</el-menu-item>
                 <el-menu-item index="Mention">提币审核</el-menu-item>
                 <el-menu-item index="Charge">手续费管理</el-menu-item>
@@ -80,7 +85,7 @@
                 <el-icon><Tools /></el-icon>
                 <span>币币管理</span>
               </template>
-              <el-menu-item-group>
+              <el-menu-item-group @click="fn2">
                 <el-menu-item index="Orderss">订单管理</el-menu-item>
                 <el-menu-item index="Setup">币币设置</el-menu-item>
               </el-menu-item-group>
@@ -90,7 +95,7 @@
                 <el-icon><Tools /></el-icon>
                 <span>活动管理</span>
               </template>
-              <el-menu-item-group>
+              <el-menu-item-group @click="fn2">
                 <el-menu-item index="Activity">活动管理</el-menu-item>
               </el-menu-item-group>
             </el-sub-menu>
@@ -99,17 +104,17 @@
                 <el-icon><WalletFilled /></el-icon>
                 <span>红包管理</span>
               </template>
-              <el-menu-item-group>
+              <el-menu-item-group @click="fn2">
                 <el-menu-item index="Envelope">红包列表</el-menu-item>
               </el-menu-item-group>
             </el-sub-menu>
-            <el-sub-menu index="9">
+            <el-sub-menu index="9" @click="fn2">
               <template #title>
                 <el-icon><Setting /></el-icon>
                 <span>系统管理</span>
               </template>
-              <el-menu-item-group>
-                <el-menu-item index="Role">角色管理</el-menu-item>
+              <el-menu-item-group @click="fn2">
+                <el-menu-item index="Role" path="角色管理">角色管理</el-menu-item>
                 <el-menu-item index="User">用户管理</el-menu-item>
                 <el-menu-item index="Repartment">部门管理</el-menu-item>
                 <el-menu-item index="System">系统日志</el-menu-item>
@@ -127,7 +132,7 @@
                 <el-icon><WalletFilled /></el-icon>
                 <span>保证金管理</span>
               </template>
-              <el-menu-item-group>
+              <el-menu-item-group @click="fn2">
                 <el-menu-item index="Ensure">查询保证金策略</el-menu-item>
               </el-menu-item-group>
             </el-sub-menu>
@@ -136,7 +141,7 @@
                 <el-icon><Setting /></el-icon>
                 <span> OTC管理</span>
               </template>
-              <el-menu-item-group>
+              <el-menu-item-group @click="fn2">
                 <el-menu-item index="Advertisings">后台广告</el-menu-item>
                 <el-menu-item index="Complaint">后台申述</el-menu-item>
                 <el-menu-item index="Orders">订单管理</el-menu-item>
@@ -147,7 +152,7 @@
             </el-sub-menu>
           </el-menu>
         </el-aside>
-        <el-main><router-view /></el-main>
+        <el-main> <router-view /></el-main>
       </el-container>
     </el-container>
   </div>
@@ -160,6 +165,8 @@ export default defineComponent({
   name: 'HelloWorld',
   data() {
     return {
+      c: '',
+      d: '',
       isCollapse: true,
       wid: '200px',
       ce: 'none',
@@ -167,9 +174,10 @@ export default defineComponent({
     };
   },
   methods: {
-    attribute(index: any) {
+    attribute(index: any, indexPath: any) {
       this.$router.push(index);
-      console.log(index);
+      this.d = index;
+      console.log(index, indexPath);
     },
     fn() {
       console.log(111);
@@ -180,6 +188,11 @@ export default defineComponent({
       console.log(111);
       this.cl = 'block';
       this.ce = 'none';
+    },
+    fn2(index: any) {
+      // const daat2 = data1.innerText;
+      this.c = index.srcElement.innerText;
+      console.log(index.srcElement.innerText);
     },
   },
 });
@@ -221,5 +234,16 @@ export default defineComponent({
   position: absolute;
   top: 9px;
   left: 71px;
+}
+::v-deep .el-breadcrumb {
+  display: inline-block;
+  cursor: pointer;
+  position: absolute;
+  top: 25px;
+  left: 270px;
+  cursor: pointer;
+}
+.el-breadcrumb__inner {
+  cursor: pointer;
 }
 </style>
