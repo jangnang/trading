@@ -55,6 +55,53 @@
       </template>
     </el-dialog>
 
+    <!-- 修改 -->
+    <el-drawer v-model="showEdit" title="修改币种扩展管理信息">
+      <el-form :model="form">
+        <el-form-item label="是否启用：" style="margin-left: 65px">
+          <el-radio-group v-model="form.state">
+            <el-radio label="1" size="small">启用</el-radio>
+            <el-radio label="2" size="small">禁用</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="币种名称：" :label-width="formLabelWidth">
+          <el-input v-model="form.extend" placeholder="请输入" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="币种协议：" :label-width="formLabelWidth">
+          <el-input v-model="form.name" placeholder="请输入" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="合约地址：" :label-width="formLabelWidth">
+          <el-input v-model="form.site" placeholder="请输入" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="币种精度：" :label-width="formLabelWidth">
+          <el-input v-model="form.precision" autocomplete="off" />
+        </el-form-item>
+        <p>充值设置</p>
+        <el-form-item label="是否可充值：" style="margin-left: 55px">
+          <el-radio-group v-model="form.recharge">
+            <el-radio label="1" size="small">启用</el-radio>
+            <el-radio label="2" size="small">禁用</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <p>提现设置</p>
+        <el-form-item label="是否可提现：" style="margin-left: 55px">
+          <el-radio-group v-model="form.deposit">
+            <el-radio label="1" size="small">启用</el-radio>
+            <el-radio label="2" size="small">禁用</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="确认数：" :label-width="formLabelWidth">
+          <el-input v-model="form.affirm" placeholder="请输入" autocomplete="off" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="demo-drawer__footer">
+          <el-button @click="showEdit = false">取消</el-button>
+          <el-button type="primary" @click="confirmEdit">确定</el-button>
+        </span>
+      </template>
+    </el-drawer>
+
     <el-table :data="tableData" border style="width: 100%; margin-bottom: 10px">
       <el-table-column align="center" prop="extend" label="币种名称" width="100" />
       <el-table-column align="center" prop="name" label="协议名称" />
@@ -92,8 +139,9 @@
       </el-table-column>
       <el-table-column align="center" prop="affirm" label="确认数" />
       <el-table-column align="center" fixed="right" label="操作">
-        <template #default>
-          <el-button type="primary" size="small">修改</el-button>
+        <template #default="{ row }">
+          <el-button type="primary" size="small" @click="handleEditOpen(row)">修改</el-button>
+          <el-button type="danger" size="small" @click="handleDelete(row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -113,7 +161,7 @@
 
 <script>
 import { defineComponent, ref } from 'vue';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElNotification, ElMessageBox } from 'element-plus';
 import axios from 'axios';
 import PactApi from '@/api/System/pact';
 
@@ -136,6 +184,11 @@ export default defineComponent({
       },
       dialogFormVisible: false,
       formLabelWidth: '150px',
+      LabelWidth: '50px',
+      dialog: false,
+      id: 1,
+      formId: '',
+      showEdit: false,
       tableData: [
         {
           extend: '',
@@ -190,6 +243,33 @@ export default defineComponent({
         this.total = data.total;
       }
     },
+    // 删除
+    handleDelete(id) {
+      console.log('要删除的id', id);
+      ElMessageBox.confirm('该操作无法撤回请问是否继续删除?', '请确认', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        // eslint-disable-next-line consistent-return
+        .then(async () => {
+          console.log('确认');
+          const res = await PactApi.delEvent(id);
+          console.log('删除的结果', res);
+          const { statusText } = res;
+          if (statusText === 'OK') {
+            ElNotification({
+              title: '成功',
+              message: '该信息删除成功',
+              type: 'success',
+            });
+            return this.getData();
+          }
+        })
+        .catch(() => {
+          console.log('取消');
+        });
+    },
     // 添加数据
     async confirm() {
       console.log('添加', this.form);
@@ -235,6 +315,45 @@ export default defineComponent({
         // 重新获取页面数据
         this.getData();
       }
+    },
+    // 修改
+    handleEditOpen(row) {
+      console.log('要修改的内容', row);
+      const {
+        id, extend, name, site, precision, state, deposit, recharge, affirm,
+      } = row;
+      this.formId = id;
+      this.form = {
+        extend,
+        name,
+        site,
+        precision,
+        state,
+        deposit,
+        recharge,
+        affirm: affirm.split(','),
+      };
+      this.showEdit = true;
+    },
+    // 修改数据
+    // eslint-disable-next-line consistent-return
+    async confirmEdit() {
+      const res = await PactApi.editEvent(this.formId, {
+        ...this.form,
+        extend: this.form.extend,
+        name: this.form.name,
+        site: this.form.site,
+        precision: this.form.precision,
+        state: this.form.state,
+        deposit: this.form.deposit,
+        recharge: this.form.recharge,
+        affirm: this.form.affirm.join(),
+      });
+      console.log('status', res);
+      const { status } = res;
+      if (status !== 200) return showMsg('修改失败');
+      this.getData();
+      this.showEdit = false; // 关闭弹窗
     },
   },
 });
