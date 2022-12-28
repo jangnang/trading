@@ -6,32 +6,28 @@
     </el-button>
     <el-divider />
 
-    <el-button type="primary" class="add" @click="dialogFormVisible = true"> 添加协议 </el-button>
-    <el-dialog v-model="dialogFormVisible" title="添加协议">
+    <el-drawer v-model="showEdit" title="修改币种协议管理信息">
       <el-form :model="form">
-        <el-form-item label="协议ID" :label-width="formLabelWidth">
-          <el-input v-model="form.id" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="协议名称" :label-width="formLabelWidth">
+        <el-form-item label="协议名称" :label-width="LabelWidth">
           <el-input v-model="form.name" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="区块浏览器" :label-width="formLabelWidth">
+        <el-form-item label="区块浏览器" :label-width="LabelWidth">
           <el-input v-model="form.browser" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="协议主币名" :label-width="formLabelWidth">
+        <el-form-item label="协议主币名" :label-width="LabelWidth">
           <el-input v-model="form.coin" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="链ID" :label-width="formLabelWidth">
+        <el-form-item label="链ID" :label-width="LabelWidth">
           <el-input v-model="form.chain" autocomplete="off" />
         </el-form-item>
       </el-form>
       <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="confirm">确定</el-button>
+        <span class="demo-drawer__footer">
+          <el-button @click="showEdit = false">取消</el-button>
+          <el-button type="primary" @click="confirmEdit">确定</el-button>
         </span>
       </template>
-    </el-dialog>
+    </el-drawer>
 
     <el-table :data="tableData" border style="width: 100%; margin-bottom: 10px">
       <el-table-column align="center" prop="id" label="协议编号" width="100" />
@@ -40,8 +36,9 @@
       <el-table-column align="center" prop="coin" label="协议主币名" />
       <el-table-column align="center" prop="chain" label="链ID" />
       <el-table-column align="center" fixed="right" label="操作">
-        <template #default>
-          <el-button type="primary" size="small">修改</el-button>
+        <template #default="{ row }">
+          <el-button type="primary" size="small" @click="handleEditOpen(row)">修改</el-button>
+          <el-button type="danger" size="small" @click="handleDelete(row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -61,7 +58,7 @@
 
 <script>
 import { defineComponent } from 'vue';
-import { ElMessage } from 'element-plus';
+import { ElMessageBox, ElNotification } from 'element-plus';
 import axios from 'axios';
 import BulkApi from '@/api/System/bulk';
 
@@ -73,7 +70,6 @@ export default defineComponent({
       total: 0,
       limit: 10,
       form: {
-        id: '',
         name: '',
         browser: '',
         coin: '',
@@ -81,6 +77,11 @@ export default defineComponent({
       },
       dialogFormVisible: false,
       formLabelWidth: '100px',
+      LabelWidth: '50px',
+      dialog: false,
+      id: 1,
+      formId: '',
+      showEdit: false,
       tableData: [
         {
           id: '1',
@@ -118,6 +119,44 @@ export default defineComponent({
       this.limit = res;
       this.getData();
     },
+    // 修改
+    handleEditOpen(row) {
+      console.log('要修改的内容', row);
+      const {
+        id, name, browser, coin, chain, ...info
+      } = row;
+      this.formId = id;
+      this.form = {
+        ...info,
+        name,
+        browser,
+        coin,
+        chain: chain.split(','),
+      };
+      this.showEdit = true;
+    },
+    // 修改数据
+    // eslint-disable-next-line consistent-return
+    async confirmEdit() {
+      const res = await BulkApi.editEvent(this.formId, {
+        ...this.form,
+        name: this.form.name,
+        browser: this.form.browser,
+        coin: this.form.coin,
+        chain: this.form.chain.join(),
+      });
+      console.log('res', res);
+      const { statusText } = res;
+      if (statusText === 'OK') {
+        ElNotification({
+          title: '成功',
+          message: '该信息修改成功',
+          type: 'success',
+        });
+      }
+      this.getData();
+      this.showEdit = false; // 关闭弹窗
+    },
     // 获取列表
     async getData() {
       const res = await BulkApi.getEventList({ $limit: this.limit, $page: this.page });
@@ -129,45 +168,32 @@ export default defineComponent({
         this.total = data.total;
       }
     },
-    // 添加数据
-    async confirm() {
-      console.log('添加', this.form);
-      const {
-        id, name, browser, coin, chain,
-      } = this.form;
-
-      const res = await BulkApi.addEvent({
-        id,
-        name,
-        browser,
-        coin,
-        chain,
-      });
-      console.log('res', res);
-
-      // 添加成功提示
-      const { statusText, data } = res;
-      if (statusText === 'Created') {
-        ElMessage({
-          message: '添加成功',
-          type: 'success',
+    // 删除
+    handleDelete(id) {
+      console.log('要删除的id', id);
+      ElMessageBox.confirm('该操作无法撤回请问是否继续删除?', '请确认', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        // eslint-disable-next-line consistent-return
+        .then(async () => {
+          console.log('确认');
+          const res = await BulkApi.delEvent(id);
+          console.log('删除的结果', res);
+          const { statusText } = res;
+          if (statusText === 'OK') {
+            ElNotification({
+              title: '成功',
+              message: '该信息删除成功',
+              type: 'success',
+            });
+            return this.getData();
+          }
+        })
+        .catch(() => {
+          console.log('取消');
         });
-
-        // 关闭
-        this.dialogFormVisible = false;
-
-        // 清空表单
-        this.form = {
-          id,
-          name,
-          browser,
-          coin,
-          chain,
-        };
-
-        // 重新获取页面数据
-        this.getData();
-      }
     },
   },
 });

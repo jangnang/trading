@@ -7,7 +7,7 @@ interface MaintenanceData {
 }
 
 // 添加
-const addMian = async (data: MaintenanceData) => {
+const addMian = async (data: any) => {
   const res = await $api.post('/mian', {
     ...data,
   });

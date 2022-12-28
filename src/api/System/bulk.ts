@@ -1,27 +1,23 @@
 import $api from '../index';
 
 interface BulkData {
-  id: string | number;
   name: string;
   browser: string;
   coin: string;
   chain: string;
 }
 
-// 添加
-const addEvent = async (data: BulkData) => {
-  const res = await $api.post('/bulk', {
+// 修改
+const editEvent = async (id: string | number, data: BulkData) => {
+  const res = await $api.put(`/bulk/${id}`, {
     ...data,
   });
-
   return res;
 };
 
-// 修改
-const editEvent = async (id: string | number, data: BulkData) => {
-  const res = await $api.patch(`/bulk/${id}`, {
-    ...data,
-  });
+// 删除
+const delEvent = async (id: string | number) => {
+  const res = await $api.delete(`/bulk/${id}`);
   return res;
 };
 
@@ -34,7 +30,7 @@ const getEventList = async ({ $limit = 10, $page = 1 }) => {
 };
 
 export default {
-  addEvent,
   editEvent,
+  delEvent,
   getEventList,
 };

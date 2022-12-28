@@ -22,9 +22,15 @@ const addEvent = async (data: PactData) => {
 
 // 修改
 const editEvent = async (id: string | number, data: PactData) => {
-  const res = await $api.patch(`/pact/${id}`, {
+  const res = await $api.put(`/pact/${id}`, {
     ...data,
   });
+  return res;
+};
+
+// 删除
+const delEvent = async (id: string | number) => {
+  const res = await $api.delete(`/pact/${id}`);
   return res;
 };
 
@@ -39,5 +45,6 @@ const getEventList = async ({ $limit = 10, $page = 1 }) => {
 export default {
   addEvent,
   editEvent,
+  delEvent,
   getEventList,
 };
