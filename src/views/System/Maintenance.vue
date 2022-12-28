@@ -88,7 +88,6 @@ import { ElMessage, ElMessageBox, ElNotification } from 'element-plus';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import MianApi from '@/api/System/mian';
-import { showMsg } from '@/util/toast';
 
 export default defineComponent({
   name: 'maintenancePage',
@@ -265,8 +264,6 @@ export default defineComponent({
         address: this.form.address.join(),
       });
       console.log('status', res);
-      const { status } = res;
-      if (status !== 200) return showMsg('修改失败');
       this.getData();
       this.showEdit = false; // 关闭弹窗
     },

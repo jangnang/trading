@@ -18,9 +18,16 @@ const addEvent = async (data: DeployData) => {
 
 // 修改
 const editEvent = async (id: string | number, data: DeployData) => {
-  const res = await $api.patch(`/deploy/${id}`, {
+  const res = await $api.put(`/deploy/${id}`, {
     ...data,
   });
+  console.log(data);
+  return res;
+};
+
+// 删除
+const delEvent = async (id: string | number) => {
+  const res = await $api.delete(`/deploy/${id}`);
   return res;
 };
 
@@ -35,5 +42,6 @@ const getEventList = async ({ $limit = 10, $page = 1 }) => {
 export default {
   addEvent,
   editEvent,
+  delEvent,
   getEventList,
 };
