@@ -371,14 +371,11 @@ const handleDelete = async (index: number, row: User) => {
   });
   getData();
 };
+// 搜索
 const onSearch = () => {
   page.value = 1;
   fullscreenLoading.value = true;
   setTimeout(() => {
-    input21.value = '';
-    value.value = '';
-    input22.value = '';
-    value1.value = '';
     getData();
     fullscreenLoading.value = false;
   }, 1000);
@@ -387,6 +384,10 @@ const onSearch = () => {
 const openFullScreen1 = () => {
   fullscreenLoading.value = true;
   setTimeout(() => {
+    input21.value = '';
+    value.value = '';
+    input22.value = '';
+    value1.value = '';
     getData();
     fullscreenLoading.value = false;
   }, 1000);
