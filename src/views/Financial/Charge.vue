@@ -146,7 +146,7 @@ watch(page, (count, prevCount) => {
   console.log(input5.value);
 });
 
-const onPageChange = (page) => {
+const onPageChange = (page: { value: any; }) => {
   page = page.value;
   getData();
 };
