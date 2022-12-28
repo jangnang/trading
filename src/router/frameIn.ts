@@ -108,36 +108,7 @@ export default [
     name: 'Envelope',
     component: () => import('@/views/Envelope/Envelope.vue'),
   },
-  {
-    path: 'Role',
-    name: 'Role',
-    component: () => import('@/views/System/Role.vue'),
-  },
-  {
-    path: 'User',
-    name: 'User',
-    component: () => import('@/views/System/User.vue'),
-  },
-  {
-    path: 'Repartment',
-    name: 'Repartment',
-    component: () => import('@/views/System/Repartment.vue'),
-  },
-  {
-    path: 'System',
-    name: 'System',
-    component: () => import('@/views/System/System.vue'),
-  },
-  {
-    path: 'Classify',
-    name: 'Classify',
-    component: () => import('@/views/System/Classify.vue'),
-  },
-  {
-    path: 'Permissions',
-    name: 'Permissions',
-    component: () => import('@/views/System/Permissions.vue'),
-  },
+
   {
     path: 'Maintenance',
     name: 'Maintenance',
